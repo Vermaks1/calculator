@@ -18,8 +18,7 @@ button_list = [
 for i, btn in enumerate(button_list):
     def com(k=btn):
         return calculation(k)
-    button = ttk.Button(root, text=btn, command=com)
-    button.grid(row=i // 4+1, column=i % 4, ipady=10)
+    ttk.Button(root, text=btn, command=com).grid(row=i // 4+1, column=i % 4, ipady=10)
 
 calculator = Entry(
     root, font='Arial 28', insertontime=0,
@@ -29,12 +28,45 @@ calculator.grid(row=0, column=0, columnspan=4, sticky=W + E, ipady=4)
 
 
 def calculation(key):
-    try:
-        result = eval(calculator.get())
-    except (ZeroDivisionError, SyntaxError, IndexError, ValueError, NameError):
+    calculator.focus()
+    if key == '=':
+        try:
+            result = eval(calculator.get())
+            calculator.insert(END, f'={result}')
+        except (ZeroDivisionError, SyntaxError, IndexError, ValueError, NameError):
+            calculator.delete(0, END)
+            calculator.insert(0, 'error')
+    elif key == 'C':
         calculator.delete(0, END)
-        calculator.insert(0, 'error')
-
+    elif key == '%':
+        result = eval(calculator.get()) / 100
+        calculator.delete(0, END)
+        calculator.insert(0, str(result))
+    elif key == '√':
+        result = sqrt(float(calculator.get()))
+        num = calculator.get()
+        calculator.delete(0, END)
+        calculator.insert(0, f'√{num}={result}')
+    elif key == 'x²':
+        result = float(calculator.get()) ** 2
+        num = calculator.get()
+        calculator.delete(0, END)
+        calculator.insert(0, f'{num}²={result}')
+    elif key == '1/x':
+        result = 1 /  float(calculator.get())
+        num = calculator.get()
+        calculator.delete(0, END)
+        calculator.insert(0, f'1/{num}={result}')
+    elif key == '+/-':
+        if calculator.get()[0] == '-':
+            calculator.delete(0)
+        elif calculator.get()[0] == '+':
+            calculator.delete(0)
+            calculator.insert(0, '-')
+        else:
+            calculator.insert(0, '-')
+    else:
+        calculator.insert(END, key)
 
 def sym(e):
     e_key = e.keysym
