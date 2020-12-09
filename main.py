@@ -72,6 +72,12 @@ def sym(e):
     e_key = e.keysym
     if e_key == 'Escape':
         root.destroy()
+    elif e_key == 'Return':
+        calculation('=')
+    elif ('=' in calculator.get() or 'error' in calculator.get()):
+        calculator.delete(0, END)
+    elif e_key not in button_list and len(e_key) <= 2:
+        calculator.delete(0, END)
 
 
 root.bind('<Key>', sym)
